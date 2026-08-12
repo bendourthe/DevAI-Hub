@@ -18,6 +18,7 @@ Quick-reference index of all available skills. Use the skill name or summary to 
 | claude-agent-sdk | ai-development | "Integrate Claude Agent SDK in TypeScript with provider routing, spending caps, and audit logging" | catalog/skills/ai-development/claude-agent-sdk/SKILL.md |
 | code-semantic-search | ai-development | "Retrieve relevant code from large repositories using hybrid semantic search and AST-aware chunking" | catalog/skills/ai-development/code-semantic-search/SKILL.md |
 | google-antigravity-sdk | ai-development | "Build autonomous AI agents with the Google Antigravity SDK -- async agent loop, hooks, policies, MCP" | catalog/skills/ai-development/google-antigravity-sdk/SKILL.md |
+| hermes-tweet | ai-development | "Use Hermes Tweet with catalog discovery and approval-gated X actions" | catalog/skills/ai-development/hermes-tweet/SKILL.md |
 | multi-provider-ai | ai-development | "Route LLM requests across Anthropic, Bedrock, Vertex AI, and OpenRouter providers" | catalog/skills/ai-development/multi-provider-ai/SKILL.md |
 | prompt-engineering | ai-development | "Design, test, and optimize prompts for LLM applications with structured evaluation" | catalog/skills/ai-development/prompt-engineering/SKILL.md |
 | rag-implementation | ai-development | "Implement RAG pipelines with chunking, embeddings, vector stores, and retrieval optimization" | catalog/skills/ai-development/rag-implementation/SKILL.md |

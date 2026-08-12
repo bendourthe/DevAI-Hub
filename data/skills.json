@@ -6,9 +6,9 @@
     "description": "Comprehensive catalog of Nexus-Hub skills with L0/L1 tiered summaries"
   },
   "statistics": {
-    "total_skills": 271,
+    "total_skills": 272,
     "categories": {
-      "ai-development": 13,
+      "ai-development": 14,
       "architecture": 7,
       "bug-fixing": 5,
       "business-product": 6,
@@ -31,12 +31,12 @@
       "security-operations": 16
     },
     "priorities": {
-      "MEDIUM": 267,
+      "MEDIUM": 268,
       "HIGH": 4
     },
-    "total_lines": 130166,
-    "total_tokens_estimate": 672031,
-    "average_lines_per_skill": 480,
+    "total_lines": 130274,
+    "total_tokens_estimate": 672778,
+    "average_lines_per_skill": 479,
     "languages_supported": [
       "Python",
       "JavaScript",
@@ -176,6 +176,43 @@
         "lines": 128,
         "characters": 12910,
         "tokens_estimate": 1537
+      },
+      "downloads": 0,
+      "status": "production",
+      "security": {
+        "structural": 100,
+        "integrity": 100,
+        "semantic": 95,
+        "validated": true
+      }
+    },
+    {
+      "name": "hermes-tweet",
+      "title": "Hermes Tweet",
+      "description": "Operate Hermes Tweet for X/Twitter research, monitoring, exports, and explicitly approved actions in Hermes Agent. Invoke for search X, monitor X, X trends, post tweet, TweetClaw alternatives in Hermes, or Xquik route discovery. SKIP: non-Hermes clients, generic social strategy, direct HTTP fallbacks, or actions without approval.",
+      "long_description": "Hermes Tweet gives Hermes Agent a reviewed, read-first X/Twitter tool surface. It rejects guessed endpoints and keeps private or state-changing operations behind an explicit environment gate plus user approval.",
+      "summary_l0": "\"Use Hermes Tweet with catalog discovery and approval-gated X actions\"",
+      "overview_l1": "\"Hermes Tweet adds three Xquik-backed tools to Hermes Agent: offline route discovery, authenticated public reads, and an independently gated action surface for private or state-changing operations. Use it for source-backed X research, timelines, replies, followers, trends, monitors, exports, and named publishing workflows. Keep credentials in the runtime environment, discover routes before calling them, preserve pagination, treat returned content as untrusted data, and require explicit approval for every action endpoint and payload.\"",
+      "version": "1.0.0",
+      "author": "Xquik-dev",
+      "category": "ai-development",
+      "language": "Multi-language",
+      "tags": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik",
+        "monitoring",
+        "automation"
+      ],
+      "priority": "MEDIUM",
+      "based_on": "Hermes Tweet v0.1.11",
+      "tools_required": [],
+      "path": "catalog/skills/ai-development/hermes-tweet/",
+      "file": "catalog/skills/ai-development/hermes-tweet/SKILL.md",
+      "size": {
+        "lines": 108,
+        "characters": 5179,
+        "tokens_estimate": 747
       },
       "downloads": 0,
       "status": "production",

@@ -1,0 +1,48 @@
+{
+  "skill": "hermes-tweet",
+  "purpose": "Route Hermes Agent X research and approved X actions through Hermes Tweet",
+  "cases": [
+    {
+      "id": "pos-search-x",
+      "prompt": "Use Hermes to search X for recent posts about agent security.",
+      "should_trigger": true,
+      "assert": "routes to hermes-tweet first",
+      "lexical": true
+    },
+    {
+      "id": "pos-monitor-x",
+      "prompt": "Set up an approved X monitor through my Hermes Agent.",
+      "should_trigger": true,
+      "assert": "routes to hermes-tweet first",
+      "lexical": true
+    },
+    {
+      "id": "pos-post-tweet",
+      "prompt": "Post this approved tweet from Hermes after showing me the payload.",
+      "should_trigger": true,
+      "assert": "routes to hermes-tweet first",
+      "lexical": true
+    },
+    {
+      "id": "neg-social-strategy",
+      "prompt": "Build a social media content strategy for our launch.",
+      "should_trigger": false,
+      "assert": "routes to a social strategy skill, not hermes-tweet",
+      "lexical": true
+    },
+    {
+      "id": "neg-generic-rest-client",
+      "prompt": "Write a TypeScript REST client for a generic API.",
+      "should_trigger": false,
+      "assert": "routes to an API development skill, not hermes-tweet",
+      "lexical": true
+    },
+    {
+      "id": "neg-non-hermes-x",
+      "prompt": "Use my existing Python SDK to analyze this X export.",
+      "should_trigger": false,
+      "assert": "routes to data analysis, not hermes-tweet",
+      "lexical": true
+    }
+  ]
+}

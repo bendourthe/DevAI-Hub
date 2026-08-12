@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Hermes Tweet skill.** Add a repository-native workflow for catalog-guided X/Twitter research, complete paginated reads, and explicitly approved private or state-changing operations in Hermes Agent. The skill targets the current stable v0.1.11 GitHub release, keeps credentials in runtime configuration, and rejects direct HTTP fallbacks.
+
 ### Fixed
 
 - **v3.16.6 release CI.** Three jobs failed on the release merge: CI `validate` (pre-commit trailing whitespace in `extensions/github-usage-monitor/test/ui.test.ts` and CRLF in `src/providers/drawdown.ts`), CI `tests` (`test_rendered_overlay_toggle` called `render_gate` without taking the fixture, so a missing Playwright install raised `NameError` instead of skip-with-note), and Presentify extractor `verify` (`ensure_render_env.py` shipped with a shebang but mode `100644`, which ruff EXE001 rejects). The GitHub Usage Monitor coverage gate, last red on v3.16.4 at 77.93% statements, is restored above 80% by exercising the remaining activation commands.
