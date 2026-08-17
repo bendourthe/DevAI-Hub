@@ -16,9 +16,13 @@ Publication of release commit `daa1d6e6bc9b0a339ed72f575d5be2a948557426` opened 
 
 GitHub Usage Monitor compilation and coverage pass 26 test files and 428 tests with 81.52 percent statement coverage and 84.66 percent line coverage; its 0.3.3 VSIX passes the 63-file content verifier. Codex Usage Monitor compilation and coverage pass 8 test files and 77 tests with 80.73 percent statement coverage and 81.25 percent line coverage; its 0.2.11 VSIX packages 39 files. Hook sibling parity passes 262 tests, focused installer and migration-removal checks pass 19 tests, validators/plans/workflows/root pass 882 tests with 2 skips, installers pass 433 with 17 skips, skills pass 696, and all five internal Python extension suites pass. The local `tests/integrations` shard reaches the 15-minute Windows bound without an assertion failure; protected PR and post-merge CI remain the authoritative full integration evidence. Every declared `make validate` constituent, ShellCheck, PowerShell parsing, strict added-line Unicode safety, and the security gate pass with 0 critical and 0 high findings. The staged manifest contains 1,242 files, and a line-ending-pinned archive of the staged tree passes `verify_install.py` with all 1,242 entries matching.
 
+### Release Completion
+
+Protected release PR #42 merged into `develop` at `12da1a0859287664e54954485c2189549ff4e6b8` after every required check passed, including the repaired Presentify `verify` context. All five post-merge `develop` workflows passed. Promotion PR #43 then passed its protected synthetic-merge checks and merged into `main` at `b6715755b0783404bfffd0300b032410f8d8d07c`; all six main workflows plus both follow-on CodeQL action analyses passed. Annotated tag `v3.17.4` points to that exact main merge, and expanded tag CI run `32069775483` passed. The public [v3.17.4 GitHub Release](https://github.com/bendourthe/Nexus-Hub/releases/tag/v3.17.4) carries the approved notes with no extra assets. GitHub's downloaded source archive passed the strict final `verify_install.py` gate with all 1,242 manifest files matching and no modified, missing, or extra files.
+
 ### Release Boundary
 
-The original complete diff and derived release notes received explicit approval on 2026-08-17, after which the release commit and branch were published. Protected CI then exposed the required-check deadlock described above. The amended complete-diff release notes and follow-up commit, push, and protected `develop` integration received explicit approval on 2026-08-17. `main` promotion, the v3.17.4 tag, and GitHub Release remain separate final gates.
+The original and amended complete-diff release notes, protected integration, `main` promotion, annotated tag, and GitHub Release publication received explicit approval on 2026-08-17. Every release gate is complete; no follow-up patch or known-gap entry is required.
 
 ## [2026-08-17] - v3.17.4 Phase 6: architecture, gaps, and installer CI
 

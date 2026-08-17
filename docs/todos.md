@@ -1,6 +1,6 @@
 # Nexus-Hub Progress Dashboard
 
-**Branch:** `release/v3.17.4`
+**Branch:** `develop`
 
 ---
 
@@ -34,7 +34,7 @@
 | v3.17.2 release tasks complete | 5 | 7 | 2 |
 | v3.17.3 release-candidate tasks complete | 9 | 9 | 0 |
 | v3.17.4 plan phases complete | 6 | 6 | 0 |
-| v3.17.4 release-candidate tasks complete | 8 | 10 | 2 |
+| v3.17.4 release-candidate tasks complete | 10 | 10 | 0 |
 | v3.17.5 plan phases complete | 0 | 7 | 7 |
 | Cursor hook portability tasks complete | 4 | 4 | 0 |
 | Usage monitor color-race tasks complete | 2 | 2 | 0 |
@@ -180,7 +180,7 @@
 - [x] Complete Phase 5: Lifecycle Integration and Docs
 - [x] Complete Phase 6: Architecture Refactor, Known-Gaps Reconciliation, and CI/CD
 
-## Release Candidate - v3.17.4 Org Knowledge and Usage Monitor Resilience [IN PROGRESS]
+## Release Candidate - v3.17.4 Org Knowledge and Usage Monitor Resilience [DONE]
 
 - [x] Publish and integrate the Org Knowledge feature through protected CI
 - [x] Preserve and integrate the GitHub Usage Monitor resilience amendment
@@ -190,8 +190,8 @@
 - [x] Obtain explicit approval for release notes derived from the complete final diff
 - [x] Repair the absent path-filtered `verify` context without weakening protected-branch requirements or running heavy Presentify suites on unrelated changes
 - [x] Obtain explicit approval for the amended complete-diff release notes before the follow-up commit and push
-- [ ] Publish the release branch and obtain protected release-candidate CI results
-- [ ] Promote to `main`, tag v3.17.4, publish the GitHub Release, and verify downloaded artifacts
+- [x] Publish the release branch and obtain protected release-candidate CI results
+- [x] Promote to `main`, tag v3.17.4, publish the GitHub Release, and verify downloaded artifacts
 
 ## Parallel Plan - v3.17.5 DeepSeek Harness Adoption [PLANNED]
 
