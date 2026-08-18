@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), 4 (decision-record lifecycle, B2), and 5 (registry drift-check, B4) are complete; Phases 6-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), 4 (decision-record lifecycle, B2), 5 (registry drift-check, B4), and 6 (invocation-policy frontmatter, B3) are complete; Phase 7 remains. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -59,6 +59,21 @@
 - **Current containment**: `check_registry_entries.py` reports the drift on every run and fails it under `--strict`; structural drift is already a hard gate. `tests/validators/test_check_registry_entries.py::test_the_real_tree_reports_its_text_drift_rather_than_hiding_it` asserts the reporting stays visible, so the backlog cannot silently vanish.
 - **Suggested disposition**: a dedicated repair change that syncs the registries from SKILL.md, re-runs the full trigger-eval gate to catch routing shifts, and then flips the check to `--strict` in `make validate`. The encoding-corrupted entries should be fixed first: they are unambiguous, and unlike the staleness cases there is no judgment call about which text is authoritative.
 
+### DF-1 - OPEN (deferred): five platforms not yet surveyed for invocation-policy levers
+
+- **Target files**: `docs/policy/skill-invocation-policy-levers.md`
+- **What it is**: the Phase 6 survey covered `claude`, `copilot`, `cursor`, `codex`, and `antigravity2` against fetched vendor documentation. `opencode`, `qwen`, `kimi`, `hermes`, and `nexus-ai` were not surveyed.
+- **Why it matters**: the table records them as NOT SURVEYED, deliberately distinct from "none documented". The first means nobody looked; the second means someone read the vendor page. Collapsing the two is how an unchecked assumption becomes a recorded fact, which is the failure mode the do-not-invent rule exists to prevent.
+- **Impact if left**: none functionally. Those platforms receive `SKILL.md` verbatim, so a declared field reaches them and is ignored if unrecognised. The gap is in the record, not the behavior.
+- **Suggested disposition**: complete the survey in the next release pass that already re-verifies platform contracts, since `[[platform-contract-verification]]` visits the same vendor documentation.
+
+### MT-6 - OPEN observation: the Codex invocation mapping is built but unexercised
+
+- **Target files**: `scripts/lib/integrations/_catalog_adapters.py`
+- **What it is**: no catalog skill declares `disable-model-invocation`, so `codex_invocation_policy` currently emits nothing on every install.
+- **Why it exists anyway**: the maintainer chose to build it while the survey evidence was fresh, accepting the scope-fit trade-off explicitly. The inverted polarity is exactly the detail that is expensive and error-prone to re-derive later.
+- **Containment**: `tests/integrations/test_codex_invocation_policy.py::test_the_shipped_catalog_declares_no_manual_only_skill` asserts today's state and fails when the first skill declares the field, which is the moment to re-check installer smoke expectations.
+
 ### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
 
 - `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
@@ -68,10 +83,10 @@
 | Category | Open | Resolved |
 |---|---:|---:|
 | Not implemented by design / unverified (`NI-#`) | 0 | 0 |
-| Deferred (`DF-#`) | 0 | 0 |
+| Deferred (`DF-#`) | 1 | 0 |
 | Bugs (`BG-#`) | 0 | 0 |
 | Warnings (`WN-#`) | 1 | 0 |
-| Maintenance / tech debt (`MT-#`) | 3 | 2 |
+| Maintenance / tech debt (`MT-#`) | 4 | 2 |
 | Quality gates (`QG-#`) | 0 | 1 |
 
 ---

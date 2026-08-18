@@ -105,6 +105,19 @@ Practical implications for SKILL.md authoring:
 
 Cross-links: the body-size targets sit in the size-norm rule immediately below. The bundled-subdir convention is documented separately in the "Per-skill Bundled Resources" subsection further down.
 
+#### Optional Invocation-Policy Frontmatter
+
+A skill MAY declare two optional strict-boolean frontmatter fields controlling who can invoke it. Both follow the same optional-field contract as the framework-mapping fields below: absence is never an error and costs no Tier-1 tokens.
+
+| Field | Meaning | Default |
+|---|---|---|
+| `disable-model-invocation` | `true` stops the agent auto-loading the skill; it runs only when the user invokes it explicitly | `false` |
+| `user-invocable` | `false` hides the skill from the slash menu, leaving it available to the model as background knowledge | `true` |
+
+`scripts/validate_skills.py` enforces two rules in `--bundles-only`, the mode `make validate` and CI run. A non-boolean value is an error naming the skill and field (`user-invocable: "true"` is a string that reads as correct and behaves as unset). And `disable-model-invocation: true` together with `user-invocable: false` is an error, because it leaves a skill nobody can invoke; that combination is a Nexus-Hub rule, not a vendor one.
+
+Distribution is free for platforms that read these keys from `SKILL.md`, since the installers copy the file verbatim and a platform ignores frontmatter keys it does not recognise. Which platforms document which field, with source URLs and verified dates, is recorded in [`docs/policy/skill-invocation-policy-levers.md`](docs/policy/skill-invocation-policy-levers.md). Any claim that a platform supports a lever is subject to the do-not-invent rule: a fetched official vendor document, or the answer is "none documented".
+
 #### Optional Security and Compliance Framework Mapping
 
 Security and compliance skills MAY declare an optional set of cross-framework mapping fields in their YAML frontmatter. These fields are **non-required**, do **not** count toward Tier-1 token budget pressure for skills that omit them, and are validated as **optional** by `scripts/validate_skills.py` (their absence is never an error; their presence is checked for list shape only).

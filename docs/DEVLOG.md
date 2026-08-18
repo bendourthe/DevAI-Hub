@@ -1,5 +1,28 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 6: invocation-policy frontmatter
+
+### What Changed
+
+Two optional strict-boolean SKILL.md fields (`disable-model-invocation`, `user-invocable`), validated in the mode CI runs; a per-platform survey recorded in a new `docs/policy/skill-invocation-policy-levers.md`; and the one installer mapping the survey showed was actually needed.
+
+### The Do-Not-Invent Rule Earned Its Keep Twice
+
+Both times a web-search summary asserted a field the vendor's own page does not document: Cursor `user-invocable` (traced to a forum thread; the docs page lists five fields and not that one) and Antigravity `disable-slash-command` (the docs page documents only `name` and `description`). Taking either at face value would have shipped a mapping for a nonexistent field, which is exactly the fabricated-`.kimi/agent.yaml` shape frozen in `docs/decisions/rejected/`.
+
+### Survey Result
+
+Because installers copy `SKILL.md` verbatim, `claude`, `copilot`, and `cursor` need **no installer change** - the fields ride inside the file already being copied. Only `codex` differs, using `policy.allow_implicit_invocation` in an `agents/openai.yaml` sidecar with **inverted polarity**. The maintainer approved building that mapping (installer surface is ask-first). It inverts rather than copies, emits nothing unless a skill declares the field, and never overwrites an authored sidecar.
+
+Five smaller platforms are recorded as NOT SURVEYED, kept deliberately distinct from "none documented".
+
+### Verification
+
+273 skills pass untouched; 12 validator tests and 18 mapping tests, both directions; platform-contract, freshness, and installer-parity gates green after the installer change. AGENTS.md now sits at 9454/10060 words (6% headroom), so the Phase 1 budget gate is actively constraining rather than theoretical.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 5: registry entry drift-check
 
 ### What Changed
