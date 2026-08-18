@@ -180,7 +180,11 @@
       ],
       "path": "catalog/skills/ai-development/deepseek-harness/",
       "file": "SKILL.md",
-      "size": 21166,
+      "size": {
+        "lines": 265,
+        "characters": 21166,
+        "tokens_estimate": 5292
+      },
       "downloads": 0,
       "status": "active",
       "security": {

@@ -1,5 +1,30 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 5: registry entry drift-check
+
+### What Changed
+
+`scripts/check_registry_entries.py` renders each skill's expected registry entries from its own frontmatter and diffs against the committed bytes. Existing tests cover membership and counts; nothing covered whether a present, counted entry still says the right thing. Scope was widened past the plan's three files to include `bundles.json` module reachability, which is the Phase 2 blind spot (`QG-1`) and was previously only provable by a 30-minute suite.
+
+### What It Found On First Run
+
+- A `size` schema violation I introduced in Phase 2: an integer where all 272 other entries use a dict. Fixed, with a regression test.
+- Pre-existing index category drift: `loop-engineering` read `Workflow` against `workflow` everywhere else. Fixed.
+- **171 drifted text fields across 107 of 273 skills** (74 description, 51 overview_l1, 16 summary_l0 in JSON, 15 summary_l0 in the index). Mixed causes: genuine staleness where SKILL.md was edited without its entry, and at least six cases of real encoding corruption where `skills.json` holds the cp1252 rendering of a UTF-8 em-dash.
+
+### Why The Backlog Is Tracked, Not Bundled
+
+Repairing it means rewriting 74 descriptions, which are the routing surface that `run_trigger_evals.py` scores. Phase 2 showed how a single description edit moves neighbouring skills' scores. That change belongs in its own commit, not inside a phase about building a checker.
+
+So the gate has two channels: structural is hard and clean today; text drift is always reported and fatal only under `--strict`. Recorded as `MT-5`, with a test asserting the drift keeps being reported so it cannot quietly disappear.
+
+### Verification
+
+Structure clean at exit 0 over 273 skills; `--strict` exits 1, confirming the second channel is real; 22 new tests covering every failure direction on a synthetic catalog; 797 passed / 2 skipped across validators plus installer smoke.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 4: decision-record lifecycle
 
 ### What Changed

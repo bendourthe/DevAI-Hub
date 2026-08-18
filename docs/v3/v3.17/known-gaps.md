@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), and 4 (decision-record lifecycle, B2) are complete; Phases 5-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), 4 (decision-record lifecycle, B2), and 5 (registry drift-check, B4) are complete; Phases 6-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -50,6 +50,15 @@
 - **Resolution**: the user was asked and chose to skip the migration. The template is untouched. `scripts/validate_decision_records.py` guards the confusion in both directions (a memory file containing `# Decision:` fails with a relocation hint; one holding only the ADR template passes), and both directions are tested.
 - **Carry-forward**: a comparison-seeded plan can inherit a path from the source project that does not exist in the target. Plans should verify that a named migration source exists before listing it as an acceptance criterion.
 
+### MT-5 - OPEN: 171 drifted registry text fields across 107 skills
+
+- **Target files**: `data/skills.json`, `data/SKILL_INDEX.md`
+- **What it is**: the Phase 5 drift-check found that 107 of 273 skills have at least one registry text field disagreeing with their SKILL.md frontmatter: 74 `description`, 51 `overview_l1`, 16 `summary_l0` in `skills.json`, and 15 `summary_l0` in `SKILL_INDEX.md`.
+- **Causes are mixed**: genuine staleness (a SKILL.md edited without its entry, e.g. `google-antigravity-sdk`'s `summary_l0`), plus at least six cases of real **encoding corruption** where `skills.json` holds `U+00E2 U+20AC U+201D`, the cp1252 rendering of the UTF-8 bytes for an em-dash, against a clean `U+2014` in SKILL.md. The corrupted file ships to users and feeds the MCP search server.
+- **Why it is not fixed in Phase 5**: repairing it rewrites `description` for 74 skills. Descriptions are the routing surface that `run_trigger_evals.py` scores, and Phase 2 demonstrated that a single description edit moves neighbouring skills' scores. A routing-affecting rewrite of a distributed registry belongs in its own change, not inside a phase whose subject is building the checker.
+- **Current containment**: `check_registry_entries.py` reports the drift on every run and fails it under `--strict`; structural drift is already a hard gate. `tests/validators/test_check_registry_entries.py::test_the_real_tree_reports_its_text_drift_rather_than_hiding_it` asserts the reporting stays visible, so the backlog cannot silently vanish.
+- **Suggested disposition**: a dedicated repair change that syncs the registries from SKILL.md, re-runs the full trigger-eval gate to catch routing shifts, and then flips the check to `--strict` in `make validate`. The encoding-corrupted entries should be fixed first: they are unambiguous, and unlike the staleness cases there is no judgment call about which text is authoritative.
+
 ### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
 
 - `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
@@ -62,7 +71,7 @@
 | Deferred (`DF-#`) | 0 | 0 |
 | Bugs (`BG-#`) | 0 | 0 |
 | Warnings (`WN-#`) | 1 | 0 |
-| Maintenance / tech debt (`MT-#`) | 2 | 2 |
+| Maintenance / tech debt (`MT-#`) | 3 | 2 |
 | Quality gates (`QG-#`) | 0 | 1 |
 
 ---
