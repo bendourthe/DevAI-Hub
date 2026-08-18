@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phase 1 (doc word budgets, B1) and Phase 2 (deepseek-harness skill, A1) are complete; Phases 3-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), and 3 (skill extensions, A2+A3+A4) are complete; Phases 4-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -35,6 +35,13 @@
 - **Why it matters**: a plan that hardcodes an absolute target count invites a wrong edit whenever implementation lags authoring. Counts were verified against four independent sources before editing, per the v3.16.1 lesson.
 - **Suggested disposition**: plans should express catalog counts as a delta ("+1 skill") rather than an absolute target.
 
+### MT-3 - CLOSED by design decision: A4 executive-summary block adapted rather than added
+
+- **Target files**: `catalog/skills/infrastructure/incident-postmortem/SKILL.md`
+- **What the plan asked for**: a new mandatory 30-second Executive Summary block at the top of the postmortem template, before the timeline.
+- **Why it was adapted**: the skill already required a `Summary` section as required-section 1, positioned above the timeline. Adding a second summary beside it would have produced two competing top-of-document summaries and made the template worse.
+- **What was done instead**: the existing `Summary` spec was rewritten in place to BE the 30-second executive summary and to require all four elements the plan named, including the two that were missing (why the process let the failure escape, and the durable lesson). The intent is fully delivered without duplicating structure. This is the one non-additive line in the Phase 3 diff.
+
 ### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
 
 - `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
@@ -47,7 +54,7 @@
 | Deferred (`DF-#`) | 0 | 0 |
 | Bugs (`BG-#`) | 0 | 0 |
 | Warnings (`WN-#`) | 1 | 0 |
-| Maintenance / tech debt (`MT-#`) | 2 | 0 |
+| Maintenance / tech debt (`MT-#`) | 2 | 1 |
 | Quality gates (`QG-#`) | 0 | 1 |
 
 ---

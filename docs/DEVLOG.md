@@ -1,5 +1,28 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 3: skill extensions
+
+### What Changed
+
+Three shipped skills gained dsh-derived disciplines, all additive, no frontmatter touched (+109 / -1 across three SKILL.md files plus one new reference).
+
+- `anti-slop-editing`: a Chain-of-Thought Leakage family (four patterns at the level of authoring vantage rather than sentence style) plus `references/cot-leakage.md`.
+- `verification-before-completion`: a Smallest Sufficient Evidence Set section with a change-surface-to-evidence table.
+- `incident-postmortem`: admission criteria, a four-element executive-summary requirement, and Step 8c guardrail linking.
+
+### Two Judgment Calls
+
+**A3 was strengthened against this session's own evidence.** The plan said "never default to the full suite locally". Phase 2's real bug was caught only by a 30-minute suite, so the rule is written as "narrowest that COVERS, not narrowest available", with an explicit clause that a slow check IS the narrowest sufficient set when nothing else covers the change. The change-surface table gained a row the plan did not request, "new file in a registered tree", which is Phase 2's bug generalized.
+
+**A4's executive-summary block was adapted, not added.** The skill already required a `Summary` section above the timeline. Adding a second top-of-document summary would have made the template worse, so the existing spec was rewritten to be the 30-second executive summary and to require the two elements it was missing: why the process let the failure escape, and the durable lesson. Recorded as `MT-3`.
+
+### Verification
+
+Evidence set selected per the discipline A3 adds. Trigger evals PASS with 0 routing failures; bundle audit clean over 273 skills (also proving the new reference is not an orphan); 99 targeted validator tests pass; all four files ASCII-clean with 0 markdown style issues; all added wikilinks resolve. The 30-minute installer and integration suites are not in the covering set for a prose-only diff with no registry change.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 2: deepseek-harness skill
 
 ### What Changed
