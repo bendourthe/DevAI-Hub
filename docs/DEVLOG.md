@@ -1,5 +1,34 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 2: deepseek-harness skill
+
+### What Changed
+
+Added the `deepseek-harness` skill (A1 from the DeepSeek Harness comparison), a peer of `claude-agent-sdk` and `google-antigravity-sdk`. Catalog: 272 -> 273 skills.
+
+- `catalog/skills/ai-development/deepseek-harness/SKILL.md` - 265 lines covering entry modes, profile/bundle composition, the step/turn loop, capability seams, fail-closed sandbox modes, the MCP bridge, the Python SDK, and skills discovery.
+- `.../evals/trigger-cases.json` - 5 positive cases, 5 near-miss negatives.
+- Registration across five surfaces (not the three the plan named): the `SKILL_INDEX.md` row and its total line, the `skills.json` entry and its `statistics` block, and the `marketplace.json` category count and plugin description.
+
+### Written From Source, Not From Memory
+
+The comparison's shallow clone was still in the scratchpad at commit `47f9438`, so every technical claim was read from the dsh repo (`docs/architecture.md`, `docs/subsystems/*`, the package READMEs) rather than extrapolated from the plan's ~20 enumerated facts. Its prompt-shaped content was treated as data, never as instructions.
+
+### Two Plan Corrections
+
+The plan's catalog count was stale (it said 271 -> 272; actual is 272 -> 273), verified against four independent sources before editing. And the plan named three registry files where `test_registry_consistency.py` proved there are five places to update; the tests caught all four omissions.
+
+### Routing Lesson
+
+The first eval run failed because the description claimed the generic quartet build/agent/tool/sdk and named "Claude Agent SDK" verbatim in its SKIP clause, so a Claude-SDK prompt scored 0.83 against this skill. The scorer is containment overlap, so a description is scored on what fraction of the *user's* words it claims. Naming a competitor product verbatim in a SKIP clause imports that competitor's trigger vocabulary, defeating the clause's purpose. Fixed by naming routing targets by capability and adding specific trigger surface (`ctx.tools`, `dump-config`, "patch layer").
+
+### Verification
+
+Trigger evals PASS with 0 routing failures and 0 un-allowlisted collisions; bundle audit clean over 273 skills; skill-security scan 0 findings; `tests/validators/` 718 passed / 2 skipped. Registry diff surgical at 44 insertions / 2 deletions.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 1: doc word budgets
 
 ### What Changed

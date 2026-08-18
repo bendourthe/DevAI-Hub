@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phase 1 (doc word budgets, B1) is complete; Phases 2-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: In progress. Phase 1 (doc word budgets, B1) and Phase 2 (deepseek-harness skill, A1) are complete; Phases 3-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -21,6 +21,24 @@
 - **Why it is not a Phase 1 failure**: the plan specifies seeding every ceiling at current size plus 10% headroom, which this does. The gate now measures the cost; it does not by itself reduce it.
 - **Suggested disposition**: a ratchet-down pass on `AGENTS.md` (relocating per-topic sections to `docs/policy/` and `guides/reference/` files the agent reads on demand) is a candidate for Phase 7 or a follow-on version. Tracked here so the measurement is not silently accepted as the permanent baseline.
 
+### QG-1 - CLOSED in implementation: the skill-registration surface is six places, not three
+
+- **Target files**: `data/skills.json`, `data/SKILL_INDEX.md`, `data/bundles.json`, `AGENTS.md`, `docs/v3/v3.17/plans/v3.17.5-adoption-deepseek-harness.md`
+- **What was wrong**: the Phase 2 prompt and the standing `AGENTS.md` rule both name three registry files. Registering a skill actually touches six places: the `SKILL_INDEX.md` row AND its `**Total: N skills**` line; the `skills.json` entry AND its `statistics.total_skills` / `statistics.categories` map; the `marketplace.json` category count AND plugin description; and `data/bundles.json`'s capability `modules`, which have been CATEGORY-COMPLETE since schema 1.5.0 so that every skill is reachable by a focused install.
+- **How it surfaced**: `test_registry_consistency.py` caught the four `statistics` / total-line omissions immediately. The sixth surface was caught only by `tests/integrations/test_selective_install.py::test_every_catalog_skill_is_reachable_through_some_module`, which failed with "1 catalog skills are reachable only via `full`". That suite takes about 30 minutes locally, so the gap is invisible to a fast validator loop.
+- **Resolution**: all six updated; `deepseek-harness` added to the `ai-engineering` module. Folding the full list into the `AGENTS.md` "Register the skill" instructions is recommended follow-on work so the next author is not relying on a 30-minute suite to discover surface six.
+
+### MT-2 - OPEN observation: plan-time catalog counts go stale
+
+- **Target files**: `docs/v3/v3.17/plans/v3.17.5-adoption-deepseek-harness.md`
+- **What it is**: the plan was authored 2026-08-14 against a 271-skill catalog and specified landing at 272. The catalog had reached 272 by implementation time, so Phase 2 landed at 273.
+- **Why it matters**: a plan that hardcodes an absolute target count invites a wrong edit whenever implementation lags authoring. Counts were verified against four independent sources before editing, per the v3.16.1 lesson.
+- **Suggested disposition**: plans should express catalog counts as a delta ("+1 skill") rather than an absolute target.
+
+### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
+
+- `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
+
 ### Summary
 
 | Category | Open | Resolved |
@@ -28,9 +46,9 @@
 | Not implemented by design / unverified (`NI-#`) | 0 | 0 |
 | Deferred (`DF-#`) | 0 | 0 |
 | Bugs (`BG-#`) | 0 | 0 |
-| Warnings (`WN-#`) | 0 | 0 |
-| Maintenance / tech debt (`MT-#`) | 1 | 0 |
-| Quality gates (`QG-#`) | 0 | 0 |
+| Warnings (`WN-#`) | 1 | 0 |
+| Maintenance / tech debt (`MT-#`) | 2 | 0 |
+| Quality gates (`QG-#`) | 0 | 1 |
 
 ---
 
