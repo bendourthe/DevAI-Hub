@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Doc word budgets (v3.17.5 Phase 1)**: `scripts/validate_doc_budgets.py` gates every always-loaded instruction doc against a word ceiling declared in `docs/policy/doc-budgets.json`, wired into `make validate` and the CI `validate` job. Eight docs are budgeted at seeding: `AGENTS.md`, `CLAUDE.md`, the five lockstep `templates/ai-instructions/base-*.md` files, and `catalog/style-guides/markdown.md`. Ceilings ratchet DOWN over releases; raising one requires justification in the PR that raises it. Failure classes (`BAD`, `DUPE`, `MISS`, `OVER`) are all collected before a single exit, and `--list` prints a usage table with headroom. Repo-internal guard: standard library only, no outbound call, no installer copy step (registered in `DEV_ONLY_SCRIPTS`). Policy and ratchet contract: `docs/policy/doc-budgets.md`.
+
 ## [3.17.4] - 2026-08-17
 
 Organization Knowledge adds a local, opt-in standards layer across all 16 platform integrations without forking the generic catalog. This release also hardens GitHub billing refreshes, improves Codex Extra Credits presentation, and removes the completed one-cycle provider-state migration.

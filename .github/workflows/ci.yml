@@ -187,6 +187,14 @@ jobs:
         # the directory is absent, which keeps it safe for any fork.
         run: python scripts/check_incident_notes.py
 
+      - name: Validate doc word budgets (v3.17.5 Phase 1)
+        # Always-loaded instruction docs (AGENTS.md, CLAUDE.md, the lockstep
+        # base-*.md templates, the Markdown style guide) cost tokens in every
+        # session on every platform. This asserts each stays under its declared
+        # ceiling in docs/policy/doc-budgets.json. Ceilings ratchet DOWN;
+        # raising one requires justification in the PR that raises it.
+        run: python scripts/validate_doc_budgets.py
+
       - name: Validate base-*.md lockstep parity (v3.6.0 Phase 2)
         # Structural parity guard over the five platform-agnostic instruction
         # templates (base-claude/codex/cursor/gemini/opencode). Fails if a

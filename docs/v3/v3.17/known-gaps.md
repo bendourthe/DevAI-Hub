@@ -10,6 +10,30 @@
 
 ---
 
+## v3.17.5 - adoption-deepseek-harness
+
+**Status**: In progress. Phase 1 (doc word budgets, B1) is complete; Phases 2-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+
+### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
+
+- **Target files**: `AGENTS.md`, `docs/policy/doc-budgets.json`
+- **What it is**: the Phase 1 seeding measurement found `AGENTS.md` at 9138 words against 6633 words for the other seven budgeted docs combined. It is inlined into `CLAUDE.md` by an `@` import and mirrored into every platform instruction surface, so it is the single largest recurring token cost in the catalog.
+- **Why it is not a Phase 1 failure**: the plan specifies seeding every ceiling at current size plus 10% headroom, which this does. The gate now measures the cost; it does not by itself reduce it.
+- **Suggested disposition**: a ratchet-down pass on `AGENTS.md` (relocating per-topic sections to `docs/policy/` and `guides/reference/` files the agent reads on demand) is a candidate for Phase 7 or a follow-on version. Tracked here so the measurement is not silently accepted as the permanent baseline.
+
+### Summary
+
+| Category | Open | Resolved |
+|---|---:|---:|
+| Not implemented by design / unverified (`NI-#`) | 0 | 0 |
+| Deferred (`DF-#`) | 0 | 0 |
+| Bugs (`BG-#`) | 0 | 0 |
+| Warnings (`WN-#`) | 0 | 0 |
+| Maintenance / tech debt (`MT-#`) | 1 | 0 |
+| Quality gates (`QG-#`) | 0 | 0 |
+
+---
+
 ## v3.17.3 - cursor-hook-portability-and-usage-monitor-reliability
 
 **Status**: Released on 2026-08-16. The scope was limited to Cursor hook portability, Codex Extra Credits live-payload mapping, shared warning-color stability, release metadata, and the renumbering of unreleased plans.

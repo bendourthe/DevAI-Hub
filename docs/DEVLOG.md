@@ -1,5 +1,74 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 1: doc word budgets
+
+### What Changed
+
+Shipped the B1 adoption item from the DeepSeek Harness comparison: a stdlib-only word-budget gate over always-loaded instruction docs.
+
+- `scripts/validate_doc_budgets.py` - reads `docs/policy/doc-budgets.json`, counts whitespace-delimited words, reports `BAD` / `DUPE` / `MISS` / `OVER` with all failures collected before a single exit. `--list` prints a usage table with headroom and flags budgets under 5% headroom.
+- `docs/policy/doc-budgets.json` - eight budgeted docs, ceilings seeded at current size plus 10% headroom.
+- `docs/policy/doc-budgets.md` - the ratchet contract: lowering a ceiling is free, raising one requires PR justification.
+- `tests/validators/test_validate_doc_budgets.py` - 23 tests asserting failure in both directions, not only the happy path.
+- Wired into the `make validate` target, the existing CI `validate` job (no new job), and `DEV_ONLY_SCRIPTS`.
+
+### Why It Matters
+
+Always-loaded docs cost tokens in every session, on every platform, forever. Every individual addition to `AGENTS.md` is locally justified and nobody was measuring the total. The gate supplies the measurement.
+
+### Findings
+
+`AGENTS.md` is 9138 words, 74% of the entire budgeted corpus (the other seven total 6633). Recorded as `MT-1` in `docs/v3/v3.17/known-gaps.md`: the gate measures that cost but does not reduce it, and a ratchet-down pass is a Phase 7 or follow-on candidate.
+
+### Verification
+
+23 new tests pass; `tests/validators/` full suite green at 718 passed / 2 skipped; installer smoke 33 passed. The gate was proven to fail as well as pass - forcing the `AGENTS.md` ceiling to 100 produces the labeled `OVER` failure and exit 1.
+
+---
+
+
+## [2026-08-18 09:10] - Session auto-summary [auto]
+
+### What Changed
+
+- 52512a12 Merge pull request #44 from bendourthe/docs/v3.17.6-agent-security-layers-plan
+- 3618513e docs(security): add v3.17.6 agent-security-layers comparison and adoption plan
+- 12da1a08 Merge pull request #42 from bendourthe/release/v3.17.4
+- 7a9025a2 fix: keep required verify check present
+- daa1d6e6 release: prepare v3.17.4
+- 9cfbf36d feat(org): add organization knowledge layer
+- 1152bef9 test(org): preserve directory traversal during cleanup
+- 58400762 ci(org): verify installer knowledge seeding
+
+### Files Modified
+
+- `.claude-plugin/plugin.json`
+- `.github/workflows/ci.yml`
+- `.github/workflows/presentify-extractor.yml`
+- `AGENTS.md`
+- `CHANGELOG.md`
+- `MANIFEST.sha256`
+- `README.md`
+- `catalog/hooks/retire-provider-override.py`
+- `catalog/hooks/settings.json`
+- `catalog/hooks/tests/test_retire_provider_override.py`
+- `catalog/skills/ai-development/model-routing/references/last-known-model-map.json`
+- `configs/installer-parity.json`
+- `data/marketplace.json`
+- `docs/DEVLOG.md`
+- `docs/policy/platform-defaults-levers.md`
+- `docs/policy/platform-read-contracts.json`
+- `docs/policy/platform-read-contracts.md`
+- `docs/todos.md`
+- `docs/v3/v3.17/comparisons/v3.17.6-comparison-agent-security-layers.md`
+- `docs/v3/v3.17/development/history/2026-08-17_org-knowledge-layer-phase-6-architecture-gaps-and-ci.md`
+
+### Current Status
+
+Auto-captured at session end on branch `develop`. Review and annotate as needed.
+
+---
+
 ## [2026-08-17] - v3.17.4 release candidate reconciliation
 
 ### What Changed
