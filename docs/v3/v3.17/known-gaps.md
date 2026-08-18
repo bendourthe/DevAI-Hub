@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), and 3 (skill extensions, A2+A3+A4) are complete; Phases 4-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), and 4 (decision-record lifecycle, B2) are complete; Phases 5-7 are not yet started. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -42,6 +42,14 @@
 - **Why it was adapted**: the skill already required a `Summary` section as required-section 1, positioned above the timeline. Adding a second summary beside it would have produced two competing top-of-document summaries and made the template worse.
 - **What was done instead**: the existing `Summary` spec was rewritten in place to BE the 30-second executive summary and to require all four elements the plan named, including the two that were missing (why the process let the failure escape, and the durable lesson). The intent is fully delivered without duplicating structure. This is the one non-additive line in the Phase 3 diff.
 
+### MT-4 - CLOSED by user decision: Phase 4 migration step rested on a false premise
+
+- **Target files**: `docs/v3/v3.17/plans/v3.17.5-adoption-deepseek-harness.md`, `catalog/memory/decisions.md`
+- **What the plan asked for**: migrate `.claude/memory/decisions.md` into dated records and replace its body with a pointer.
+- **Why it could not be done**: that file does not exist in this repository. The only `decisions.md` is `catalog/memory/decisions.md`, a blank ADR template the installer distributes to every end user's `~/.claude/memory/`. It holds no Nexus-Hub decisions. Editing it would change what users receive on their next install, which is a distribution change, not a memory consolidation.
+- **Resolution**: the user was asked and chose to skip the migration. The template is untouched. `scripts/validate_decision_records.py` guards the confusion in both directions (a memory file containing `# Decision:` fails with a relocation hint; one holding only the ADR template passes), and both directions are tested.
+- **Carry-forward**: a comparison-seeded plan can inherit a path from the source project that does not exist in the target. Plans should verify that a named migration source exists before listing it as an acceptance criterion.
+
 ### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
 
 - `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
@@ -54,7 +62,7 @@
 | Deferred (`DF-#`) | 0 | 0 |
 | Bugs (`BG-#`) | 0 | 0 |
 | Warnings (`WN-#`) | 1 | 0 |
-| Maintenance / tech debt (`MT-#`) | 2 | 1 |
+| Maintenance / tech debt (`MT-#`) | 2 | 2 |
 | Quality gates (`QG-#`) | 0 | 1 |
 
 ---

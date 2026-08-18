@@ -1,5 +1,28 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 4: decision-record lifecycle
+
+### What Changed
+
+Added `docs/decisions/` with a gated lifecycle, a stdlib-only format validator, 24 tests, four seeded records, and an AGENTS.md governance rule. `docs/decisions/**` was re-included in both CI path filters, since it is validator input and the blanket `docs/**` exclusion would otherwise let a malformed record skip CI entirely (the same fix already applied to `docs/policy/**` and `docs/incidents/**`).
+
+### One Plan Step Withdrawn
+
+Sub-task 4.1 asked to migrate `.claude/memory/decisions.md` and leave a pointer. **That file does not exist here.** The only `decisions.md` is `catalog/memory/decisions.md`, a blank ADR template the installer ships to every end user. Executing the instruction literally would have edited a distributed artifact, changing what users receive, under the guise of consolidating repo memory.
+
+The user was asked and chose to skip it. The template is untouched. The validator now guards the confusion in both directions: a memory file containing `# Decision:` fails with a relocation hint, one containing only the ADR template passes. Both are tested. Recorded as `MT-4`.
+
+### Seeded From Documented History
+
+Two rejected records (the fabricated `.kimi/agent.yaml` lever; the declined Spec Kit hook registry) and two implemented (the develop+main branching model; the MCP reverse-engineering-first policy). Every fact came from AGENTS.md or the CHANGELOG, with documented adoption dates. The two implemented records go beyond the plan because, with the migration withdrawn, that lifecycle would otherwise have shipped with nothing exercising its stricter rules.
+
+### Verification
+
+4 records OK on the shipped tree; proven to fail as well as pass; 24 new tests; 775 passed / 2 skipped across validators plus installer smoke; AGENTS.md still 831 words under its ceiling after the new rule; all five new Markdown files ASCII-clean with 0 style issues.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 3: skill extensions
 
 ### What Changed

@@ -29,6 +29,8 @@ validate: ## Validate all JSON catalog files and skill bundles
 	@python scripts/check_incident_notes.py
 	@echo "Checking always-loaded instruction docs stay under their word ceilings..."
 	@python scripts/validate_doc_budgets.py
+	@echo "Checking decision records (structure, header, mandatory alternatives)..."
+	@python scripts/validate_decision_records.py
 	@echo "Checking version sync across all version-carrying surfaces..."
 	@python scripts/check_version_sync.py
 	@echo "Checking base-*.md lockstep parity (claude/codex/cursor/gemini/opencode)..."
