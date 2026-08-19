@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Registry text drift repaired and gate hardened (v3.17.5 Phase 7)**: 156 registry text fields across 107 skills were out of sync with their `SKILL.md` sources (141 in `skills.json`, 15 in `SKILL_INDEX.md`). Six were genuine encoding corruption, holding the cp1252 rendering of a UTF-8 em-dash in a file that ships to users and feeds the MCP search server. All are now byte-synced from `SKILL.md`, the source of truth, and `check_registry_entries.py --check --strict` is the gate in both `make validate` and CI, so any reappearance is a fresh regression. Routing was unaffected: the trigger-eval gate scores descriptions from `catalog/skills/`, not from the registry, and re-ran with 0 failures.
 - **`skills.json` `size` schema violation**: the `deepseek-harness` entry stored `size` as an integer where all other entries use `{lines, characters, tokens_estimate}`. Introduced in Phase 2 and caught by the Phase 5 check on its first run; a regression test now covers the field's shape.
 - **`SKILL_INDEX.md` category drift**: `loop-engineering`'s row read `Workflow` while its directory and `skills.json` entry read `workflow`, inflating the index to 22 distinct categories against the catalog's 21.
 

@@ -93,6 +93,7 @@ The rule: **run the narrowest set of checks that covers the outgoing diff.** Nar
 | Validator or guard script | Its own test module, run in both directions: prove it passes clean input AND fails the defect it exists to catch. |
 | Docs-only edit | Link and style checks, plus any validator that reads the doc as input rather than as prose. |
 | New file in a registered tree | Whatever test asserts registration completeness for that tree. This is the surface most often missed, because the file works fine and only its discoverability is broken. |
+| A catalog-wide count or total changes | Every test that asserts that number, including ones in unrelated suites. A count is a global invariant, so a test about one item may still freeze it; grep the old value across the whole test tree rather than reasoning about which suite "should" own it. |
 | Installer or packaging edit | The installer smoke tests on every platform the change touches. |
 
 ### Report only what ran

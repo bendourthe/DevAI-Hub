@@ -12,7 +12,7 @@
 
 ## v3.17.5 - adoption-deepseek-harness
 
-**Status**: In progress. Phases 1 (doc word budgets, B1), 2 (deepseek-harness skill, A1), 3 (skill extensions, A2+A3+A4), 4 (decision-record lifecycle, B2), 5 (registry drift-check, B4), and 6 (invocation-policy frontmatter, B3) are complete; Phase 7 remains. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
+**Status**: All seven phases complete (2026-08-18). The nine adoption items land as: B1 doc word budgets, A1 deepseek-harness skill, A2+A3+A4 skill extensions, B2 decision-record lifecycle, B4 registry drift-check, B3 invocation-policy frontmatter, and Phase 7 reconciliation. B5 is deferred by design with a reference shape recorded below. Ready for the `/update release` handoff; no release blockers. This section is appended to by each subsequent phase, and Phase 7 owns the final reconciliation.
 
 ### MT-1 - OPEN observation: AGENTS.md is 74% of the entire always-loaded budget
 
@@ -50,14 +50,15 @@
 - **Resolution**: the user was asked and chose to skip the migration. The template is untouched. `scripts/validate_decision_records.py` guards the confusion in both directions (a memory file containing `# Decision:` fails with a relocation hint; one holding only the ADR template passes), and both directions are tested.
 - **Carry-forward**: a comparison-seeded plan can inherit a path from the source project that does not exist in the target. Plans should verify that a named migration source exists before listing it as an acceptance criterion.
 
-### MT-5 - OPEN: 171 drifted registry text fields across 107 skills
+### MT-5 - RESOLVED in Phase 7: registry text drift repaired and the gate hardened
 
 - **Target files**: `data/skills.json`, `data/SKILL_INDEX.md`
 - **What it is**: the Phase 5 drift-check found that 107 of 273 skills have at least one registry text field disagreeing with their SKILL.md frontmatter: 74 `description`, 51 `overview_l1`, 16 `summary_l0` in `skills.json`, and 15 `summary_l0` in `SKILL_INDEX.md`.
 - **Causes are mixed**: genuine staleness (a SKILL.md edited without its entry, e.g. `google-antigravity-sdk`'s `summary_l0`), plus at least six cases of real **encoding corruption** where `skills.json` holds `U+00E2 U+20AC U+201D`, the cp1252 rendering of the UTF-8 bytes for an em-dash, against a clean `U+2014` in SKILL.md. The corrupted file ships to users and feeds the MCP search server.
 - **Why it is not fixed in Phase 5**: repairing it rewrites `description` for 74 skills. Descriptions are the routing surface that `run_trigger_evals.py` scores, and Phase 2 demonstrated that a single description edit moves neighbouring skills' scores. A routing-affecting rewrite of a distributed registry belongs in its own change, not inside a phase whose subject is building the checker.
 - **Current containment**: `check_registry_entries.py` reports the drift on every run and fails it under `--strict`; structural drift is already a hard gate. `tests/validators/test_check_registry_entries.py::test_the_real_tree_reports_its_text_drift_rather_than_hiding_it` asserts the reporting stays visible, so the backlog cannot silently vanish.
-- **Suggested disposition**: a dedicated repair change that syncs the registries from SKILL.md, re-runs the full trigger-eval gate to catch routing shifts, and then flips the check to `--strict` in `make validate`. The encoding-corrupted entries should be fixed first: they are unambiguous, and unlike the staleness cases there is no judgment call about which text is authoritative.
+- **Resolution (Phase 7, maintainer chose the full repair)**: all 156 fields synced from SKILL.md, which is the source of truth because it is the file agents actually load. 141 fields in `skills.json` and 15 summaries in `SKILL_INDEX.md`. The six encoding-corrupted entries now carry the same `U+2014` their source does. `check_registry_entries.py --check --strict` is now the gate in both `make validate` and CI, so any reappearance is a fresh regression rather than inherited debt.
+- **Correction to the Phase 5 risk assessment**: Phase 5 recorded that repairing this would rewrite 74 routing descriptions and therefore needed a full eval re-run. That caution was overstated for this direction. `run_trigger_evals.py` scores descriptions read from `catalog/skills/`, not from `skills.json`, so syncing the registry FROM SKILL.md cannot move a routing score by construction. The eval gate was re-run anyway and passed with 0 failures. The caution remains correct for the opposite direction, editing SKILL.md itself.
 
 ### DF-1 - OPEN (deferred): five platforms not yet surveyed for invocation-policy levers
 
@@ -74,6 +75,31 @@
 - **Why it exists anyway**: the maintainer chose to build it while the survey evidence was fresh, accepting the scope-fit trade-off explicitly. The inverted polarity is exactly the detail that is expensive and error-prone to re-derive later.
 - **Containment**: `tests/integrations/test_codex_invocation_policy.py::test_the_shipped_catalog_declares_no_manual_only_skill` asserts today's state and fails when the first skill declares the field, which is the moment to re-check installer smoke expectations.
 
+### DF-2 - DEFERRED by design: B5 gate-DAG runner for `make validate`
+
+- **What it is**: the comparison's B5 item, a dependency-aware scheduler (needs-graph, cycle detection, `allowFailure`, bounded concurrency) replacing the sequential `make validate` chain.
+- **Why deferred, not dropped**: the `Boundaries` scope-fit rule in `AGENTS.md` says not to add the structure before the pain. This plan added three validators, taking the chain to roughly thirty sequential steps that still complete in seconds. A DAG scheduler would be real machinery with no measured problem to solve.
+- **Reference shape for whoever picks it up**: the source project's `scripts/run-gates.ts` (890 lines, 14 aggregates), described in `docs/v3/v3.17/comparisons/v3.17.5-comparison-deepseek-harness.md` under B5. Reach for it when validator wall-clock, not validator count, becomes the complaint.
+
+### MT-7 - OPEN observation: nine skill descriptions contain non-ASCII punctuation
+
+- **Target files**: nine `SKILL.md` files, listed in the Phase 7 session history.
+- **What it is**: surfaced while repairing MT-5. Nine skills carry an em-dash (`U+2014`) in their `description` frontmatter, against the project's ASCII-only prose rule and the `anti-slop-editing` em-dash discipline.
+- **Why it was not fixed here**: `description` is the routing surface that `run_trigger_evals.py` scores. Editing nine of them is the direction where the Phase 5 caution genuinely applies, and it is unrelated to this plan's scope. `validate_unicode_safety.py` passes, so nothing is broken today.
+- **Suggested disposition**: fold into a prose pass that re-runs the trigger-eval gate, rather than a release-eve edit.
+
+### NI-1 - NOT IMPLEMENTED by design: `docs/solutions/` remains absent
+
+- The three-surface split written in `docs/decisions/README.md` names `docs/solutions/` as the home for solved problems with reproduction context. The directory does not exist yet, and the `solution-knowledge-base` skill creates it on first use.
+- Recorded here so the split's third surface is a known future consolidation rather than an apparent inconsistency in the README. Nothing is broken by its absence: the split defines boundaries, and an empty boundary is still a boundary.
+
+### BG-1 - CLOSED in Phase 7: a hardcoded catalog total broke an unrelated test
+
+- **Target files**: `tests/skills/test_org_authoring_surface.py`, `catalog/skills/workflow/verification-before-completion/SKILL.md`
+- **What was wrong**: `test_org_authoring_surface.py` is about ONE skill's registration, but it also froze the whole-catalog total in three places (`total_skills == 272`, the index total line, and the marketplace plugin description). Phase 2 took the catalog to 273 and broke it. The failure survived until the Phase 7 full-suite run because every scoped evidence set in Phases 2 through 6 covered `tests/validators`, `tests/integrations`, and `catalog/hooks/tests`, and this test lives in `tests/skills`.
+- **Resolution**: the totals are now DERIVED from `len(skills["skills"])` inside that test, so it asserts consistency without freezing a number that changes every time a skill is added. The count invariant itself is owned by `test_registry_consistency.py`, which derives it from disk in both directions. A grep confirmed no other test hardcodes the old total.
+- **Root-cause fix beyond the immediate break**: the change-surface table added to `verification-before-completion` in Phase 3 had no row for this case. It does now: a catalog-wide count is a global invariant, so a change to it requires grepping the old value across the whole test tree rather than reasoning about which suite "should" own it. The discipline this plan shipped is what failed here, so the discipline was the thing to repair.
+
 ### WN-1 - OPEN (carried, environmental): re-confirmed during v3.17.5 Phase 2
 
 - `tests/installer/test_bootstrap.py::test_ps_standalone_extracts_and_hands_off` failed again in the Windows Git-Bash development environment on the same `/usr/bin/tar: unexpected end of file` quirk. Phase 2 touched no installer or bootstrap file, so this is the carried v3.15.0 item, not a regression. CI remains authoritative and passes.
@@ -82,12 +108,14 @@
 
 | Category | Open | Resolved |
 |---|---:|---:|
-| Not implemented by design / unverified (`NI-#`) | 0 | 0 |
-| Deferred (`DF-#`) | 1 | 0 |
-| Bugs (`BG-#`) | 0 | 0 |
-| Warnings (`WN-#`) | 1 | 0 |
-| Maintenance / tech debt (`MT-#`) | 4 | 2 |
-| Quality gates (`QG-#`) | 0 | 1 |
+| Not implemented by design / unverified (`NI-#`) | 1 (NI-1, `docs/solutions/` absent by design) | 0 |
+| Deferred (`DF-#`) | 2 (DF-1 five platforms unsurveyed; DF-2 B5 gate-DAG runner) | 0 |
+| Bugs (`BG-#`) | 0 | 3 (BG-1 hardcoded catalog total; plus the `size` schema violation and the `loop-engineering` index category, both found by the Phase 5 drift-check) |
+| Warnings (`WN-#`) | 1 (WN-1, environmental, carried from v3.15.0) | 0 |
+| Maintenance / tech debt (`MT-#`) | 4 (MT-1 AGENTS.md budget share; MT-2 plan-time counts; MT-6 mapping unexercised; MT-7 non-ASCII descriptions) | 3 (MT-3, MT-4, MT-5) |
+| Quality gates (`QG-#`) | 0 | 1 (QG-1, six registration surfaces) |
+
+**Release blockers: none.** Every open item is an observation, a deliberate deferral, or a carried environmental failure that CI does not reproduce.
 
 ---
 

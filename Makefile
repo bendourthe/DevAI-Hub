@@ -31,8 +31,8 @@ validate: ## Validate all JSON catalog files and skill bundles
 	@python scripts/validate_doc_budgets.py
 	@echo "Checking decision records (structure, header, mandatory alternatives)..."
 	@python scripts/validate_decision_records.py
-	@echo "Checking per-skill registry entries against the catalog (structure hard, text drift advisory)..."
-	@python scripts/check_registry_entries.py --check
+	@echo "Checking per-skill registry entries against the catalog (structure and text, strict)..."
+	@python scripts/check_registry_entries.py --check --strict
 	@echo "Checking version sync across all version-carrying surfaces..."
 	@python scripts/check_version_sync.py
 	@echo "Checking base-*.md lockstep parity (claude/codex/cursor/gemini/opencode)..."

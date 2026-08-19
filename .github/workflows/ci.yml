@@ -222,9 +222,12 @@ jobs:
         # expected failure and it is quiet: an entry that is present and
         # counted still passes every membership check while misdescribing the
         # skill. Structure, editorial field types, and capability-module
-        # reachability are hard failures. Text-field drift is reported but not
-        # fatal without --strict; the pre-existing backlog is tracked as MT-5.
-        run: python scripts/check_registry_entries.py --check
+        # reachability are hard failures. Text drift became a hard failure too
+        # in v3.17.5 Phase 7, once the 156-field pre-existing backlog (MT-5)
+        # was repaired; the registries are now byte-synced with their SKILL.md
+        # sources, so any new divergence is a fresh regression rather than
+        # inherited debt.
+        run: python scripts/check_registry_entries.py --check --strict
 
       - name: Validate base-*.md lockstep parity (v3.6.0 Phase 2)
         # Structural parity guard over the five platform-agnostic instruction

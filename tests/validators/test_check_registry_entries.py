@@ -313,14 +313,21 @@ def test_the_real_tree_is_structurally_clean():
     assert result.returncode == 0, result.stderr
 
 
-def test_the_real_tree_reports_its_text_drift_rather_than_hiding_it():
-    """The pre-existing drift is tracked as MT-5; this asserts it stays visible."""
+def test_the_real_tree_has_zero_text_drift():
+    """MT-5 was repaired in v3.17.5 Phase 7; the registries are byte-synced.
+
+    This replaces the Phase 5 test that asserted the drift stayed VISIBLE while
+    the backlog existed. The backlog is gone, the gate runs `--strict` in
+    `make validate` and CI, and any reappearance is a fresh regression.
+    """
     result = subprocess.run(
-        [sys.executable, str(SCRIPT), "--root", str(REPO_ROOT)],
+        [sys.executable, str(SCRIPT), "--root", str(REPO_ROOT), "--strict"],
         capture_output=True,
         text=True,
     )
-    assert "registry text drift" in result.stdout, (
-        "the known pre-existing drift must keep being reported; if it is now "
-        "zero, the repair landed and this test should be updated to assert that"
+    assert result.returncode == 0, (
+        "registry text drift has reappeared. Every entry's description, "
+        "summary_l0, and overview_l1 must match its SKILL.md, which is the "
+        "source of truth. Use --emit <skill> for a paste-ready entry.\n"
+        + result.stderr
     )

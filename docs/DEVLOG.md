@@ -1,5 +1,28 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 Phase 7: refactor, gaps reconciliation, CI/CD
+
+### What Changed
+
+Final phase of the DeepSeek Harness adoption plan.
+
+- **MT-5 repaired in full** (maintainer chose the widest option): 156 registry text fields synced from `SKILL.md`, including six encoding-corrupted entries. `check_registry_entries.py` is now `--strict` in `make validate` and CI, so drift cannot silently return. The Phase 5 test asserting drift stayed visible was replaced by one asserting it is zero, exactly as that test's own message instructed.
+- **Known gaps reconciled**: 3 closed, 1 resolved, 2 bugs closed, 4 open observations, 2 deliberate deferrals, 1 not-implemented-by-design, 1 carried environmental. No release blockers.
+- **B5 recorded as deferred-by-design** with the reference shape, and `docs/solutions/` absence recorded so the three-surface split reads as a known future consolidation rather than an inconsistency.
+
+### Two Honest Findings
+
+**The refactor found nothing to refactor.** No obsolete files, no tracked empty directories, everything this plan added went to an established home. Reporting that beats inventing work.
+
+**CI was already optimized along every axis the plan named** - path filters, concurrency cancel, pip caching, expensive-OS legs gated to non-PR events - all in place before this work. This plan's net CI cost is three sub-second steps in an existing job.
+
+### A Correction
+
+Phase 5 recorded that repairing MT-5 would rewrite 74 routing descriptions and needed a full eval re-run. That was overstated for this direction: the eval scores descriptions read from `catalog/skills/`, not from `skills.json`, so syncing the registry FROM the source cannot move a routing score. The gate was re-run anyway and passed. The caution stands for the opposite direction, which is why MT-7 (nine non-ASCII descriptions) was recorded rather than fixed on release eve.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 6: invocation-policy frontmatter
 
 ### What Changed
