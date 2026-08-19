@@ -9,6 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [3.17.5] - 2026-08-18
+
+### Opt-in capability usage
+
+- **Skill invocation policy (`disable-model-invocation`, `user-invocable`)**
+  - **Activation:** add either boolean to a skill's `SKILL.md` frontmatter. Both are optional and absent by default, so every existing skill keeps today's behavior with no edit.
+  - **Validation:** run `python scripts/validate_skills.py --bundles-only`, which type-checks both fields and rejects the combination that would leave a skill invocable by nobody.
+  - **Rollback:** delete the frontmatter line. On Codex, also remove the generated `agents/openai.yaml` from the installed skill directory, or re-run the installer, which stops emitting it once the field is gone.
+  - **Authority boundary:** declaring these fields does not grant or enforce anything. Each platform decides whether to honor them, four document them today and the rest ignore unrecognised frontmatter keys, and no platform is obliged to keep doing so. This is a request to the host, never a security control, and it must not be used to restrict a skill for safety reasons.
+  - **Docs:** [`docs/policy/skill-invocation-policy-levers.md`](docs/policy/skill-invocation-policy-levers.md) records which platforms document which lever, with source URLs and verified dates.
+
+### Verified
+
+- **Platform read-contract re-verification (release governance step 4)**: all ten contract platforms re-checked against fetched vendor documentation for this release. Result is unchanged from v3.17.4 (eight MATCH, one non-breaking Codex drift where OpenAI documents `$HOME/.agents/skills` rather than `~/.codex/skills`, and one UNVERIFIED Nexus-AI contract whose repository is private). No installer or integration change was required. The pass also found that Qwen Code documents both invocation-policy fields with matching semantics, so `qwen` moves from NOT SURVEYED to VERIFIED in `docs/policy/skill-invocation-policy-levers.md`.
+
 ### Added
 
 - **Invocation-policy frontmatter (v3.17.5 Phase 6)**: skills MAY declare two optional strict booleans, `disable-model-invocation` (default `false`) and `user-invocable` (default `true`), validated by `validate_skills.py` in the `--bundles-only` mode `make validate` and CI run. Non-boolean values are errors, and the combination that leaves a skill invocable by nobody is rejected (a Nexus-Hub rule, not a vendor one). All 273 existing skills declare neither field and pass untouched. A new `docs/policy/skill-invocation-policy-levers.md` records the per-platform survey with source URLs and verified dates: `claude` and `copilot` document both fields, `cursor` documents one, `codex` uses `policy.allow_implicit_invocation` in an `agents/openai.yaml` sidecar with inverted polarity, `antigravity2` documents none, and five platforms are explicitly NOT SURVEYED. Because installers copy `SKILL.md` verbatim, the first three need no installer change; the Codex sidecar mapping was added with maintainer approval and inverts the value rather than copying it.

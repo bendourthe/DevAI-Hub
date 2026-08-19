@@ -2,7 +2,7 @@
 
 The durable, sourced record of whether each skills-bearing platform documents a **per-skill invocation-policy lever**: a way for one skill to declare that the model may not auto-invoke it, or that the user may not invoke it from a slash menu.
 
-**Last verified**: 2026-08-18 for v3.17.5 (Phase 6). Five platforms surveyed; see Scope below for what was not.
+**Last verified**: 2026-08-18 for v3.17.5. Six platforms surveyed (five in Phase 6, `qwen` added during the release-pass contract re-verification); see Scope below for what was not.
 
 ## Scope boundary
 
@@ -36,8 +36,9 @@ Both are recorded below as what the vendor documents, not what the summary claim
 | `copilot` | VERIFIED | `disable-model-invocation` (default `false`) | `user-invocable` (default `true`) | `SKILL.md` frontmatter | [code.visualstudio.com](https://code.visualstudio.com/docs/agent-customization/agent-skills) | 2026-08-18 |
 | `cursor` | VERIFIED (partial) | `disable-model-invocation` | none documented | `SKILL.md` frontmatter | [cursor.com](https://cursor.com/docs/skills) | 2026-08-18 |
 | `codex` | VERIFIED (different shape) | `policy.allow_implicit_invocation` (default `true`, inverted polarity) | none documented | `agents/openai.yaml` sidecar | [learn.chatgpt.com](https://learn.chatgpt.com/docs/build-skills) | 2026-08-18 |
+| `qwen` | VERIFIED | `disable-model-invocation` | `user-invocable` | `SKILL.md` frontmatter | [qwenlm.github.io](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/) | 2026-08-18 |
 | `antigravity2` | UNVERIFIED | none documented | none documented | n/a | [antigravity.google](https://antigravity.google/docs/skills) | 2026-08-18 |
-| `opencode`, `qwen`, `kimi`, `hermes`, `nexus-ai` | NOT SURVEYED | - | - | - | - | - |
+| `opencode`, `kimi`, `hermes`, `nexus-ai` | NOT SURVEYED | - | - | - | - | - |
 
 "NOT SURVEYED" is deliberately distinct from "none documented". The first means nobody looked yet; the second means someone read the vendor's page and the field is not there. Collapsing the two is how an unchecked assumption becomes a recorded fact.
 
@@ -71,13 +72,22 @@ Codex expresses the same intent through a different file, a different key, and t
 
 Because the polarity is inverted, `disable-model-invocation: true` corresponds to `allow_implicit_invocation: false`. A mapping must not copy the value across.
 
+### qwen - VERIFIED
+
+Found during the v3.17.5 release-pass contract re-verification, not the Phase 6 survey. Both fields, with semantics matching Nexus-Hub's schema:
+
+- `user-invocable`: "To hide a Skill from direct slash-command use while keeping it available for model invocation, set `user-invocable: false`". Default is user-invocable.
+- `disable-model-invocation`: "To hide a Skill from model invocation while keeping direct user invocation available, set `disable-model-invocation: true`". Default is model-invocable.
+
+Like `claude`, `copilot`, and `cursor`, Qwen reads these from `SKILL.md`, so the fields reach it through the verbatim copy with no installer change.
+
 ### antigravity2 - UNVERIFIED
 
 The skills page documents only `name` (defaults to the folder name) and `description`, and states the agent decides whether to use a skill based on context. No per-skill mechanism to disable that is documented. This is a valid, expected result, not a gap to fill.
 
 ## Distribution consequence
 
-Nexus-Hub copies `SKILL.md` verbatim to every skills-bearing platform. So for `claude`, `copilot`, and `cursor`, a skill that declares these fields **already reaches the platform correctly with no installer change**: the fields ride inside the file the installer already copies, and a platform that does not recognise a frontmatter key ignores it.
+Nexus-Hub copies `SKILL.md` verbatim to every skills-bearing platform. So for `claude`, `copilot`, `cursor`, and `qwen`, a skill that declares these fields **already reaches the platform correctly with no installer change**: the fields ride inside the file the installer already copies, and a platform that does not recognise a frontmatter key ignores it.
 
 `codex` is the only surveyed platform needing real mapping work, because its lever lives in a separate `agents/openai.yaml` sidecar with an inverted key. **That mapping is implemented** (v3.17.5 Phase 6, with maintainer approval, since it touches the installer surface): `codex_invocation_policy` in `scripts/lib/integrations/_catalog_adapters.py`, invoked from `CodexIntegration._mirror_codex` for both skill roots.
 

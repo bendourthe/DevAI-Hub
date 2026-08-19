@@ -1,5 +1,41 @@
 # Development Log
 
+## [2026-08-18] - v3.17.5 released
+
+### What Shipped
+
+The DeepSeek Harness adoption plan, all nine items, across seven phases. Every item is a local guard, a convention, or a skill: no outbound call, no credential, no dependency beyond the Python standard library.
+
+- **B1** doc word budgets with a ratchet policy
+- **A1** the `deepseek-harness` skill (catalog 272 -> 273)
+- **A2/A3/A4** chain-of-thought-leakage patterns, smallest-sufficient-evidence-set selection, postmortem admission criteria
+- **B2** the gated decision-record lifecycle with six seeded records
+- **B4** the registry entry drift-check
+- **B3** invocation-policy frontmatter plus the Codex sidecar mapping
+- **B5** deferred by design, with its reference shape recorded
+
+### What The New Guards Found On Their First Runs
+
+This is the part worth remembering. Nearly every real defect was invisible to the checks that already existed, because those check presence and counts, and each of these entries was present and correctly counted.
+
+- A `skills.json` `size` schema violation introduced in Phase 2 that no test asserted the shape of.
+- A skill unreachable from every capability module, previously provable only by a 30-minute suite.
+- 156 drifted registry text fields across 107 skills, six of them live encoding corruption shipping to users.
+- An index category typo inflating the catalog to 22 apparent categories.
+- Two web-search summaries asserting vendor fields that do not exist.
+- `BG-1`, a hardcoded catalog total frozen inside an unrelated test suite.
+
+Three plan errors were also caught and recorded rather than executed: a stale catalog count, an understated registration surface, and a migration step targeting a file that does not exist in this repository.
+
+### Release Preparation
+
+Docs reconciliation caught one error made during Phase 2: the count sweep had bumped a figure inside the **v3.17.4** "What's New" section, which is a frozen historical release note. Restored to 272, which is what that release actually shipped. That is the exact failure mode `MT-2` warns about, committed while citing it.
+
+Version bumped atomically across all seven surfaces, guard clean before and after.
+
+---
+
+
 ## [2026-08-18] - v3.17.5 Phase 7: refactor, gaps reconciliation, CI/CD
 
 ### What Changed

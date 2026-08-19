@@ -4,7 +4,7 @@
 
 # Nexus-Hub
 
-<!-- nexus-hub-version: 3.17.4 -->
+<!-- nexus-hub-version: 3.17.5 -->
 
 Nexus-Hub is the upstream skill catalog for AI coding assistants: 273 skills, 18 commands, 31 hooks, 23 agents, and 4 language rule families. It installs in one step on Windows, macOS, and Linux, and it works the same across Claude Code, OpenAI Codex, Gemini (via Antigravity), GitHub Copilot, Cursor, GitHub CLI, and the sibling Nexus desktop app and VS Code extension. The catalog is reverse-engineering-first by policy: zero third-party data processors, zero outbound calls from skills / commands / hooks, zero telemetry.
 
@@ -37,6 +37,22 @@ The two projects are designed to be useful independently: you can install Nexus-
 
 ---
 
+## What's New in v3.17.5
+
+**Nexus-Hub now measures the things it previously only asserted.** This release adopts nine items from a comparison against DeepSeek Harness, and every one of them is a local guard, a convention, or a skill. No outbound call, no credential, and no dependency beyond the Python standard library was added.
+
+**Always-loaded instruction docs have a word budget.** `AGENTS.md`, `CLAUDE.md`, the five lockstep platform templates, and the Markdown style guide now carry declared ceilings in `docs/policy/doc-budgets.json`, enforced by `make validate` and CI. The policy is a ratchet: lowering a ceiling is free, raising one requires justification in the pull request. Inspect usage with `python scripts/validate_doc_budgets.py --list`; the contract is in [`docs/policy/doc-budgets.md`](docs/policy/doc-budgets.md).
+
+**Decisions are recorded with what they beat.** `docs/decisions/` holds records under `proposed` / `implemented` / `rejected`, gated by `scripts/validate_decision_records.py`, with `## Alternatives considered` mandatory in every lifecycle. The `rejected/` folder is the point: it ships seeded with two real declined designs so a future proposer can check before re-proposing one. The three-surface split against known-gaps and solutions is defined in [`docs/decisions/README.md`](docs/decisions/README.md).
+
+**Registry entries are checked against their source, not just counted.** `scripts/check_registry_entries.py` renders each skill's expected `SKILL_INDEX.md` row and `skills.json` entry from its own frontmatter and diffs the committed bytes, and also verifies every skill is reachable from a capability module. On its first run it found a schema violation, an index category typo, and 156 drifted text fields including six carrying encoding corruption. All are repaired, and the gate now runs `--strict`. Use `--emit <skill>` for a paste-ready entry; it never writes.
+
+**Skills can declare who may invoke them.** Two optional frontmatter booleans, `disable-model-invocation` and `user-invocable`, are validated for type and for the combination that would leave a skill invocable by nobody. Which platforms document which lever, with source URLs and verified dates, is recorded in [`docs/policy/skill-invocation-policy-levers.md`](docs/policy/skill-invocation-policy-levers.md). Claude, Copilot, and Cursor read the fields straight from `SKILL.md`; Codex uses an `agents/openai.yaml` sidecar with inverted polarity, and the installer maps it correctly.
+
+**One new skill and three sharpened ones.** `deepseek-harness` joins `claude-agent-sdk` and `google-antigravity-sdk` as a vendor-SDK skill. `anti-slop-editing` gains a chain-of-thought-leakage pattern family, `verification-before-completion` gains smallest-sufficient-evidence-set selection, and `incident-postmortem` gains admission criteria and guardrail linking.
+
+Catalog counts are **273 skills**, **18 commands**, **31 hooks**, and **23 agents**. Every addition is opt-in or a repo-internal guard; nothing changes what an existing install does at runtime.
+
 ## What's New in v3.17.4
 
 **Organization standards can now be layered over Nexus-Hub without forking the catalog.** Connect a validated local directory or Git bundle with `nexus-hub org connect <path-or-url>`, then install or upgrade normally. Nexus-Hub projects the bundle's core guidance and rule files into all 16 platform integrations after its own managed block, keeps the two layers independently replaceable, and reports default or advisory precedence without claiming vendor enforcement. The new `/org` command and `org-standards-authoring` skill guide connection, synchronization, status, authoring, and platform-native escalation.
@@ -45,7 +61,7 @@ This is an opt-in local capability. Validate it with `nexus-hub org status`; rem
 
 **The usage monitors are more resilient and more precise.** GitHub Usage Monitor 0.3.3 retries only transient billing-service failures, coalesces overlapping refreshes, honors long server retry deadlines, cancels retry backoff immediately, and preserves the existing last-known-good view after exhausted retries. Codex Usage Monitor 0.2.11 renders Extra Credits usage and reset information on separate lines with full-width bars, rounds displayed credit counts to whole numbers, and shows paired live USD amounts only when the API provides both values.
 
-The temporary provider-state restoration migration introduced in v3.17.2 has completed its one-release compatibility window and is removed from the hook catalog and both installers. Catalog counts are **273 skills**, **18 commands**, **31 hooks**, and **23 agents**.
+The temporary provider-state restoration migration introduced in v3.17.2 has completed its one-release compatibility window and is removed from the hook catalog and both installers. Catalog counts are **272 skills**, **18 commands**, **31 hooks**, and **23 agents**.
 
 ## What's New in v3.17.3
 
