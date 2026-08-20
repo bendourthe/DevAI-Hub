@@ -504,3 +504,5 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# v3.17.6 sub-task 2.2: throwaway line for the code-only proof PR. Closed unmerged.
