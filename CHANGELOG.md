@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [4.0.1] - 2026-08-27
+
+### Fixed
+
+- **`/update release` never actually engaged the docs-tree canonicalization it documented.** Since v3.11.0 `catalog/commands/update.md` has stated that `/update refactor` "and, at release, `/update release`" canonicalizes that repository's whole docs tree. The wiring never delivered it: `[[docs-layout-refactor]]` canonicalizes only in Step 8.5, gated on `--canonicalize-layout`, and nothing in the release scope ever set that flag. A repository still on a legacy layout therefore carried its structural drift silently through every release and received only the passive `Continuing in place; run /update refactor to migrate` notice - a notice most projects never act on, because most projects never think about their docs structure at all. The release scope now invokes the skill with `--canonicalize-layout`, so a release always DETECTS and PROPOSES the migration.
+
+  This is documentation-vs-implementation drift of exactly the class v4.0.0 found in `canonicalize-layout` itself, where the skill documented an archive-container migration the mover never performed. The docs read correctly, so nothing caught it.
+
+  **Engaging the path does not move files.** Step 7's confirmation gate is unchanged: the proposal is presented with its link-integrity proof, nothing moves until the user approves, and declining leaves the legacy layout honoured in place while the release continues. The v4.0.0 capability-gate promise - that upgrading migrates nothing and no tree is reshaped without approval - remains true, and `tests/validators/test_release_runs_canonicalize.py` pins both halves so a later edit cannot quietly turn this into a silent auto-migration.
+
+### Capability usage gate
+
+No new opt-in capability. This release changes WHEN the existing docs-migration capability is offered (always, at release, instead of only on a separate command a user has to remember), not what it does or what it may touch. Activation, validation, rollback, the authority it does not grant, and its documentation are unchanged from v4.0.0.
+
 ## [4.0.0] - 2026-08-27
 
 ### Capability usage gate
